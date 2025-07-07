@@ -1,8 +1,9 @@
+from typing import Callable, Sequence, TypeVar
+
 from common_types import Data
 from exceptions import IncorrectDataException
 
 from .base import BaseCommand, HandledData
-from typing import Callable, TypeVar, Sequence
 
 T = TypeVar("T", str, float)
 

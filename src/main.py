@@ -1,7 +1,7 @@
 import argparse
 from typing import TYPE_CHECKING
 
-from commands import where_command
+from commands import aggregate_command, where_command
 from exceptions.incorrect_data import IncorrectDataException
 from handler import FileHandler
 
@@ -46,7 +46,7 @@ def create_handler(
 
 
 def main() -> None:
-    commands = [where_command]
+    commands = [where_command, aggregate_command]
     parser = create_parser(commands=commands)
     args = parser.parse_args()
 
@@ -56,6 +56,7 @@ def main() -> None:
     except IncorrectDataException as e:
         print(e)
     except Exception:
+        raise
         print("Что-то пошло не так.")
 
 
