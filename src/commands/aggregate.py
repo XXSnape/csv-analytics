@@ -7,7 +7,7 @@ from exceptions import IncorrectDataException
 
 from .base import BaseCommand, HandledData
 
-aggregation_function = Callable[
+type aggregation_function = Callable[
     [Data, str],
     HandledData,
 ]
@@ -42,11 +42,9 @@ def find_average(data: Data, field: str) -> HandledData:
     )
 
 
-class AggregateCommand(BaseCommand):
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.aggregators = dict[str, aggregation_function]()
+class AggregateCommand(
+    BaseCommand[aggregation_function],
+):
 
     def handle_data(
         self,
@@ -65,7 +63,7 @@ class AggregateCommand(BaseCommand):
                 "Ожидается 'поле=агрегатор'"
             )
         field, aggregator = groups
-        func = self.aggregators.get(aggregator)
+        func = self.operators.get(aggregator)
         if func is None:
             raise IncorrectDataException(
                 f"Неизвестный агрегатор: {aggregator}"
@@ -76,22 +74,10 @@ class AggregateCommand(BaseCommand):
             )
         try:
             return func(current_data, field)
-        except ValueError as e:
-            raise e
+        except ValueError:
             raise IncorrectDataException(
                 f"Ошибка при агрегировании поля {field}"
             )
-
-    def add_aggregator(
-        self,
-        aggregator: str,
-        func: aggregation_function,
-    ) -> None:
-        if aggregator in self.aggregators:
-            raise ValueError(
-                f"Агрегатор {aggregator} уже существует"
-            )
-        self.aggregators[aggregator] = func
 
 
 aggregate_command = AggregateCommand(
@@ -99,6 +85,6 @@ aggregate_command = AggregateCommand(
     help_text="Функция для агрегирования данных",
     number_in_queue=1,
 )
-aggregate_command.add_aggregator("min", find_minimum)
-aggregate_command.add_aggregator("max", find_maximum)
-aggregate_command.add_aggregator("avg", find_average)
+aggregate_command.add_operator("min", find_minimum)
+aggregate_command.add_operator("max", find_maximum)
+aggregate_command.add_operator("avg", find_average)

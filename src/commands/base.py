@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import NamedTuple, Sequence
+from typing import NamedTuple, Sequence, Callable
 
 from common_types import Data
 
@@ -9,7 +9,7 @@ class HandledData(NamedTuple):
     fieldnames: Sequence[str]
 
 
-class BaseCommand(ABC):
+class BaseCommand[T: Callable](ABC):
 
     def __init__(
         self,
@@ -22,6 +22,7 @@ class BaseCommand(ABC):
         self.help_text = help_text
         self.required = required
         self.number_in_queue = number_in_queue
+        self.operators = dict[str, T]()
 
     @abstractmethod
     def handle_data(
@@ -31,3 +32,12 @@ class BaseCommand(ABC):
         value: str,
     ) -> HandledData:
         raise NotImplementedError
+
+    def add_operator(
+        self,
+        operator: str,
+        func: T,
+    ) -> None:
+        if operator in self.operators:
+            raise ValueError(f"Оператор {operator} уже существует")
+        self.operators[operator] = func

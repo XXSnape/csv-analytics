@@ -25,11 +25,9 @@ def greater_than(a: T, b: T) -> bool:
     return a > b
 
 
-class WhereCommand(BaseCommand):
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.operators = dict[str, predicate]()
+class WhereCommand(
+    BaseCommand[predicate],
+):
 
     def handle_data(
         self,
@@ -56,7 +54,8 @@ class WhereCommand(BaseCommand):
                 break
         else:
             raise IncorrectDataException(
-                "Неверный формат условия или оператор есть в данных"
+                "Неверный формат условия или оператор есть в данных. "
+                f"Возможные операторы: {', '.join(self.operators.keys())}"
             )
         if field not in fieldnames:
             raise IncorrectDataException(
@@ -86,15 +85,6 @@ class WhereCommand(BaseCommand):
             current_data=validated_data,
             fieldnames=fieldnames,
         )
-
-    def add_operator(
-        self,
-        operator: str,
-        func: predicate,
-    ) -> None:
-        if operator in self.operators:
-            raise ValueError(f"Оператор {operator} уже существует")
-        self.operators[operator] = func
 
 
 where_command = WhereCommand(

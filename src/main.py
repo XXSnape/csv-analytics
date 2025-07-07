@@ -56,7 +56,6 @@ def main() -> None:
     except IncorrectDataException as e:
         print(e)
     except Exception:
-        raise
         print("Что-то пошло не так.")
 
 
