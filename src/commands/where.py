@@ -3,6 +3,7 @@ from typing import TypeVar
 
 from common_types import Data
 from exceptions import IncorrectDataException
+import operator
 
 from .base import (
     BaseCommand,
@@ -16,18 +17,6 @@ predicate = Callable[
     [T, T],
     bool,
 ]
-
-
-def equal(a: T, b: T) -> bool:
-    return a == b
-
-
-def less_than(a: T, b: T) -> bool:
-    return a < b
-
-
-def greater_than(a: T, b: T) -> bool:
-    return a > b
 
 
 class WhereCommand(
@@ -48,14 +37,14 @@ class WhereCommand(
                 current_data=current_data,
                 fieldnames=fieldnames,
             )
-        for operator in sorted(
+        for op in sorted(
             self.operators,
             key=len,
             reverse=True,
         ):  # Сортируем по длине оператора,
             # чтобы менее длинные операторы не
             # перекрывали более длинные
-            groups = value.split(operator)
+            groups = value.split(op)
             if len(groups) == 2:
                 field, condition = groups
                 break
@@ -82,7 +71,7 @@ class WhereCommand(
                 f"Неверный тип данных для условия: {condition!r}"
             )
 
-        func = self.operators[operator]
+        func = self.operators[op]
 
         return HandledData(
             current_data=[
@@ -95,6 +84,6 @@ class WhereCommand(
 
 
 where_command = WhereCommand()
-where_command.add_operator("=", equal)
-where_command.add_operator("<", less_than)
-where_command.add_operator(">", greater_than)
+where_command.add_operator("=", operator.eq)
+where_command.add_operator("<", operator.lt)
+where_command.add_operator(">", operator.gt)
