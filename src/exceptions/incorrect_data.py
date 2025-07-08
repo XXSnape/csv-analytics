@@ -1,4 +1,5 @@
 class IncorrectDataException(Exception):
+    """Исключение для обработки некорректных данных."""
 
     def __init__(self, message: str) -> None:
         super().__init__(message)

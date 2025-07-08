@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 def create_parser(
     commands: list["BaseCommand"],
 ) -> argparse.ArgumentParser:
+    """Создаёт парсер аргументов командной строки."""
     parser = argparse.ArgumentParser(
         description="Аналитика csv файлов"
     )
@@ -37,6 +38,7 @@ def create_handler(
     commands: list["BaseCommand"],
     args: argparse.Namespace,
 ) -> FileHandler:
+    """Создаёт обработчик файла с зарегистрированными командами."""
     handler = FileHandler(
         file_path=args.file,
         values={
@@ -52,6 +54,7 @@ def create_handler(
 
 
 def main() -> None:
+    """Главная функция для запуска обработки CSV файла."""
     commands = [
         where_command,
         aggregate_command,

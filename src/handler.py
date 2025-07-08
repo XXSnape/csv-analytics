@@ -11,6 +11,8 @@ from exceptions import IncorrectDataException
 
 
 class FileHandler:
+    """Класс для обработки CSV файлов и
+    выполнения команд над данными."""
 
     @staticmethod
     def output_data(
@@ -30,6 +32,7 @@ class FileHandler:
         file_path: str,
         values: dict[str, str],
     ) -> None:
+        """Инициализирует обработчик файла."""
         self.path = pathlib.Path(file_path).resolve()
         if not self.path.exists():
             raise IncorrectDataException(
@@ -40,6 +43,7 @@ class FileHandler:
         self.handlers = list[BaseCommand]()
 
     def handle(self):
+        """Обрабатывает CSV файл, применяет команды и выводит результат."""
         data = Data()
         fieldnames = tuple[str]()
         with self.path.open() as file:
@@ -62,6 +66,7 @@ class FileHandler:
         self,
         command: BaseCommand,
     ) -> None:
+        """Регистрирует команду для обработки данных."""
         if not isinstance(command, BaseCommand):
             raise TypeError(
                 "Команда должна быть наследником BaseCommand"

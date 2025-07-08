@@ -7,17 +7,22 @@ from exceptions import IncorrectDataException
 
 
 class HandledData(NamedTuple):
+    """Класс для хранения обработанных данных и полей."""
+
     current_data: Data
     fieldnames: Sequence[str]
 
 
 class BaseCommand[T: Callable](ABC):
+    """Базовый класс для команд обработки данных."""
+
     command: ClassVar[str]
     help_text: ClassVar[str]
     number_in_queue: ClassVar[int]
     required: ClassVar[bool] = False
 
     def __init__(self) -> None:
+        """Инициализирует операторы для команды."""
         self.operators = dict[str, T]()
 
     @abstractmethod
@@ -27,6 +32,7 @@ class BaseCommand[T: Callable](ABC):
         fieldnames: Sequence[str],
         value: str,
     ) -> HandledData:
+        """Обрабатывает данные в соответствии с командой."""
         raise NotImplementedError
 
     def add_operator(
@@ -34,11 +40,13 @@ class BaseCommand[T: Callable](ABC):
         operator: str,
         func: T,
     ) -> None:
+        """Добавляет оператор для обработки данных."""
         if operator in self.operators:
             raise ValueError(f"Оператор {operator} уже существует")
         self.operators[operator] = func
 
     def get_operator_names(self) -> str:
+        """Возвращает строку с именами доступных операторов."""
         return (
             ", ".join(self.operators.keys())
             if self.operators
@@ -47,6 +55,8 @@ class BaseCommand[T: Callable](ABC):
 
 
 class DataValidatorMixin[T: Callable]:
+    """Миксин для валидации данных перед обработкой."""
+
     raise_exception_if_there_is_no_data: ClassVar[bool]
 
     def validate_data(
@@ -88,6 +98,7 @@ def find_out_type(
     current_data: Data,
     field: str,
 ) -> type:
+    """Определяет тип данных в указанном поле."""
     try:
         float(current_data[0][field])
         return float
