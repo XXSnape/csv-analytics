@@ -56,8 +56,12 @@ class FileHandler:
                     value=value,
                 )
         self.output_data(data, fieldnames)
+        return data
 
-    def register_handler(self, command: BaseCommand) -> None:
+    def register_handler(
+        self,
+        command: BaseCommand,
+    ) -> None:
         if not isinstance(command, BaseCommand):
             raise TypeError(
                 "Команда должна быть наследником BaseCommand"
