@@ -49,6 +49,58 @@ from src.commands import where_command
             ],
         ),
         ("name=NoName", []),
+        (
+            "rating>4.7",
+            [
+                {
+                    "name": "iphone 15 pro",
+                    "brand": "apple",
+                    "price": "999",
+                    "rating": "4.9",
+                },
+                {
+                    "name": "galaxy s23 ultra",
+                    "brand": "samsung",
+                    "price": "1199",
+                    "rating": "4.8",
+                },
+            ],
+        ),
+        (
+            "rating<4.2",
+            [
+                {
+                    "name": "iphone se",
+                    "brand": "apple",
+                    "price": "429",
+                    "rating": "4.1",
+                },
+                {
+                    "name": "redmi 10c",
+                    "brand": "xiaomi",
+                    "price": "149",
+                    "rating": "4.1",
+                },
+            ],
+        ),
+        (
+            "name>q",
+            [
+                {
+                    "name": "redmi note 12",
+                    "brand": "xiaomi",
+                    "price": "199",
+                    "rating": "4.6",
+                },
+                {
+                    "name": "redmi 10c",
+                    "brand": "xiaomi",
+                    "price": "149",
+                    "rating": "4.1",
+                },
+            ],
+        ),
+        ("price>1200", []),
     ],
 )
 def test_valid_value(
