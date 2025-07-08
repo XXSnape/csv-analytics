@@ -3,6 +3,7 @@ from common_types import Data
 
 from commands import aggregate_command
 from commands.base import HandledData
+from exceptions import IncorrectDataException
 
 
 @pytest.mark.parametrize(
@@ -29,3 +30,17 @@ def test_valid_value(
         value=value,
     )
     assert result.current_data == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["ratin=avg", "rating=sum", "name=avg", "rating"],
+)
+def test_invalid_value(products: HandledData, value: str) -> None:
+    data, fieldnames = products
+    with pytest.raises(IncorrectDataException):
+        aggregate_command.handle_data(
+            current_data=data,
+            fieldnames=fieldnames,
+            value=value,
+        )
