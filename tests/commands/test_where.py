@@ -1,8 +1,9 @@
-from commands.base import HandledData
+import pytest
 from common_types import Data
 from exceptions import IncorrectDataException
 from src.commands import where_command
-import pytest
+
+from commands.base import HandledData
 
 
 @pytest.mark.parametrize(

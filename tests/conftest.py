@@ -1,6 +1,7 @@
-import pytest
 import csv
 import pathlib
+
+import pytest
 
 from commands.base import HandledData
 
