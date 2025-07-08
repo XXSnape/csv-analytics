@@ -1,9 +1,9 @@
 import pytest
+
+from commands.base import HandledData
 from common_types import Data
 from exceptions import IncorrectDataException
 from src.commands import where_command
-
-from commands.base import HandledData
 
 
 @pytest.mark.parametrize(
@@ -120,9 +120,17 @@ def test_valid_value(
 
 @pytest.mark.parametrize(
     "value",
-    ["ratin=4.1", "rating==4.1", "rating>abc", "rating"],
+    [
+        "ratin=4.1",
+        "rating==4.1",
+        "rating>abc",
+        "rating",
+    ],
 )
-def test_invalid_value(products: HandledData, value: str) -> None:
+def test_invalid_value(
+    products: HandledData,
+    value: str,
+) -> None:
     data, fieldnames = products
     with pytest.raises(IncorrectDataException):
         where_command.handle_data(

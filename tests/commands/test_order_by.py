@@ -1,8 +1,8 @@
 import pytest
-from exceptions import IncorrectDataException
 
 from commands import order_by_command
 from commands.base import HandledData
+from exceptions import IncorrectDataException
 
 
 @pytest.mark.parametrize(
@@ -71,9 +71,16 @@ def test_valid_value(
 
 @pytest.mark.parametrize(
     "value",
-    ["ratin=desc", "rating=price", "rating"],
+    [
+        "ratin=desc",
+        "rating=price",
+        "rating",
+    ],
 )
-def test_invalid_value(products: HandledData, value: str) -> None:
+def test_invalid_value(
+    products: HandledData,
+    value: str,
+) -> None:
     data, fieldnames = products
     with pytest.raises(IncorrectDataException):
         order_by_command.handle_data(
