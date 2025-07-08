@@ -56,7 +56,7 @@ def main() -> None:
     except IncorrectDataException as e:
         print(e)
     except Exception:
-        print("Что-то пошло не так.")
+        print("Что-то пошло не так. Попробуйте ещё раз")
 
 
 if __name__ == "__main__":
