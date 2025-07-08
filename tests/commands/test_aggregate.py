@@ -1,9 +1,9 @@
 import pytest
 from common_types import Data
+from exceptions import IncorrectDataException
 
 from commands import aggregate_command
 from commands.base import HandledData
-from exceptions import IncorrectDataException
 
 
 @pytest.mark.parametrize(
