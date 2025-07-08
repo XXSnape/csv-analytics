@@ -1,9 +1,14 @@
-from typing import Callable, Sequence, TypeVar
+from collections.abc import Callable, Sequence
+from typing import TypeVar
 
 from common_types import Data
 from exceptions import IncorrectDataException
 
-from .base import BaseCommand, HandledData
+from .base import (
+    BaseCommand,
+    HandledData,
+    find_out_type,
+)
 
 T = TypeVar("T", str, float)
 
@@ -43,7 +48,6 @@ class WhereCommand(
                 current_data=current_data,
                 fieldnames=fieldnames,
             )
-        validated_data = []
         for operator in sorted(
             self.operators,
             key=len,
@@ -58,7 +62,7 @@ class WhereCommand(
         else:
             raise IncorrectDataException(
                 "Неверный формат условия или оператор есть в данных. "
-                f"Возможные операторы: {', '.join(self.operators.keys())}"
+                f"Возможные операторы: {self.get_operator_names()}"
             )
         if field not in fieldnames:
             raise IncorrectDataException(
@@ -66,11 +70,11 @@ class WhereCommand(
                 f"Поле {field} не найдено в {fieldnames}"
             )
 
-        try:
-            float(current_data[0][field])
-            type_of_field = float
-        except ValueError:
-            type_of_field = str
+        type_of_field = find_out_type(
+            current_data=current_data,
+            field=field,
+        )
+
         try:
             condition = type_of_field(condition)
         except ValueError:
@@ -80,12 +84,12 @@ class WhereCommand(
 
         func = self.operators[operator]
 
-        for row in current_data:
-            if func(type_of_field(row[field]), condition):
-                validated_data.append(row)
-
         return HandledData(
-            current_data=validated_data,
+            current_data=[
+                row
+                for row in current_data
+                if func(type_of_field(row[field]), condition)
+            ],
             fieldnames=fieldnames,
         )
 

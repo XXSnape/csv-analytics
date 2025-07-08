@@ -1,16 +1,11 @@
 import statistics
+from collections.abc import Sequence
 from operator import itemgetter
-from typing import Callable, Sequence
 
-from common_types import Data
+from common_types import Data, OperatorFunc
 from exceptions import IncorrectDataException
 
-from .base import BaseCommand, HandledData
-
-type aggregation_function = Callable[
-    [Data, str],
-    HandledData,
-]
+from .base import BaseCommand, DataValidatorMixin, HandledData
 
 
 def find_minimum(data: Data, field: str) -> HandledData:
@@ -43,11 +38,13 @@ def find_average(data: Data, field: str) -> HandledData:
 
 
 class AggregateCommand(
-    BaseCommand[aggregation_function],
+    DataValidatorMixin[OperatorFunc],
+    BaseCommand[OperatorFunc],
 ):
     command = "aggregate"
     help_text = "Функция для агрегирования данных"
     number_in_queue = 1
+    raise_exception_if_there_is_no_data = True
 
     def handle_data(
         self,
@@ -55,31 +52,19 @@ class AggregateCommand(
         fieldnames: Sequence[str],
         value: str,
     ) -> HandledData:
-        if not current_data:
-            raise IncorrectDataException(
-                "Нет данных для агрегирования"
-            )
-        groups = value.split("=")
-        if len(groups) != 2:
-            raise IncorrectDataException(
-                "Неверный формат агрегирования. "
-                "Ожидается 'поле=агрегатор'"
-            )
-        field, aggregator = groups
-        func = self.operators.get(aggregator)
-        if func is None:
-            raise IncorrectDataException(
-                f"Неизвестный агрегатор: {aggregator}"
-            )
-        if field not in fieldnames:
-            raise IncorrectDataException(
-                f"Поле {field} не найдено в {fieldnames}"
-            )
+        field = None
         try:
+            func, field = self.validate_data(
+                current_data=current_data,
+                fieldnames=fieldnames,
+                value=value,
+            )
             return func(current_data, field)
+        except IncorrectDataException:
+            raise
         except ValueError:
             raise IncorrectDataException(
-                f"Ошибка при агрегировании поля {field}"
+                f"Несовместимый тип для агрегировании поля {field}"
             )
 
 
