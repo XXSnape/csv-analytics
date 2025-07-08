@@ -1,7 +1,11 @@
 import argparse
 from typing import TYPE_CHECKING
 
-from commands import aggregate_command, where_command
+from commands import (
+    aggregate_command,
+    order_by_command,
+    where_command,
+)
 from exceptions.incorrect_data import IncorrectDataException
 from handler import FileHandler
 
@@ -36,7 +40,9 @@ def create_handler(
     handler = FileHandler(
         file_path=args.file,
         values={
-            command.command: getattr(args, command.command)
+            command.command: getattr(
+                args, command.command.replace("-", "_")
+            )
             for command in commands
         },
     )
@@ -46,7 +52,11 @@ def create_handler(
 
 
 def main() -> None:
-    commands = [where_command, aggregate_command]
+    commands = [
+        where_command,
+        aggregate_command,
+        order_by_command,
+    ]
     parser = create_parser(commands=commands)
     args = parser.parse_args()
 
