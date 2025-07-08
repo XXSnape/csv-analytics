@@ -17,9 +17,12 @@
 ```sh
 git clone https://github.com/XXSnape/csv-analytics.git
 ```
-2) Создайте виртуальное окружение и установите зависимости:
+2) Создайте виртуальное окружение для python 3.12+ и установите зависимости:
 ```sh
-pip install poetry && poetry install
+pip install poetry
+```
+```sh
+poetry install
 ```
 
 ### Тестирование
