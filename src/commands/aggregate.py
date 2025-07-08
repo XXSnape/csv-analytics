@@ -45,6 +45,9 @@ def find_average(data: Data, field: str) -> HandledData:
 class AggregateCommand(
     BaseCommand[aggregation_function],
 ):
+    command = "aggregate"
+    help_text = "Функция для агрегирования данных"
+    number_in_queue = 1
 
     def handle_data(
         self,
@@ -80,11 +83,7 @@ class AggregateCommand(
             )
 
 
-aggregate_command = AggregateCommand(
-    command="aggregate",
-    help_text="Функция для агрегирования данных",
-    number_in_queue=1,
-)
+aggregate_command = AggregateCommand()
 aggregate_command.add_operator("min", find_minimum)
 aggregate_command.add_operator("max", find_maximum)
 aggregate_command.add_operator("avg", find_average)

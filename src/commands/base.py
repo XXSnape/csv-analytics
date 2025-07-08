@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import NamedTuple, Sequence, Callable
+from typing import NamedTuple, Sequence, Callable, ClassVar
 
 from common_types import Data
 
@@ -10,18 +10,12 @@ class HandledData(NamedTuple):
 
 
 class BaseCommand[T: Callable](ABC):
+    command: ClassVar[str]
+    help_text: ClassVar[str]
+    number_in_queue: ClassVar[int]
+    required: ClassVar[bool] = False
 
-    def __init__(
-        self,
-        command: str,
-        help_text: str,
-        number_in_queue: int,
-        required: bool = False,
-    ) -> None:
-        self.command = command
-        self.help_text = help_text
-        self.required = required
-        self.number_in_queue = number_in_queue
+    def __init__(self) -> None:
         self.operators = dict[str, T]()
 
     @abstractmethod

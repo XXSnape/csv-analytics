@@ -28,6 +28,9 @@ def greater_than(a: T, b: T) -> bool:
 class WhereCommand(
     BaseCommand[predicate],
 ):
+    command = "where"
+    help_text = "Условие для фильтрации данных"
+    number_in_queue = 0
 
     def handle_data(
         self,
@@ -87,11 +90,7 @@ class WhereCommand(
         )
 
 
-where_command = WhereCommand(
-    command="where",
-    help_text="Условие для фильтрации данных",
-    number_in_queue=0,
-)
+where_command = WhereCommand()
 where_command.add_operator("=", equal)
 where_command.add_operator("<", less_than)
 where_command.add_operator(">", greater_than)
