@@ -1,9 +1,9 @@
+import operator
 from collections.abc import Callable, Sequence
 from typing import TypeVar
 
 from common_types import Data
 from exceptions import IncorrectDataException
-import operator
 
 from .base import (
     BaseCommand,

@@ -11,7 +11,11 @@ from .base import (
 )
 
 
-def sorting(data: Data, field: str, reverse: bool) -> HandledData:
+def sorting(
+    data: Data,
+    field: str,
+    reverse: bool,
+) -> HandledData:
     type_of_field = find_out_type(
         current_data=data,
         field=field,
