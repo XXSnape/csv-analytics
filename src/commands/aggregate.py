@@ -1,32 +1,42 @@
 import statistics
-from collections.abc import Sequence
-from operator import itemgetter
+from collections.abc import Callable, Sequence
+from functools import partial
 
 from common_types import Data, OperatorFunc
 from exceptions import IncorrectDataException
 
-from .base import BaseCommand, DataValidatorMixin, HandledData
+from .base import (
+    BaseCommand,
+    DataValidatorMixin,
+    HandledData,
+    find_out_type,
+)
 
 
-def find_minimum(data: Data, field: str) -> HandledData:
-    min_value = min(data, key=itemgetter(field))
-    name = "min"
+def search_for(
+    data: Data,
+    field: str,
+    func: Callable,
+) -> HandledData:
+    type_of_field = find_out_type(
+        current_data=data,
+        field=field,
+    )
+    value = func(
+        data,
+        key=lambda item: type_of_field(item[field]),
+    )
+    name = func.__name__
     return HandledData(
-        current_data=[{name: min_value[field]}],
+        current_data=[{name: value[field]}],
         fieldnames=[name],
     )
 
 
-def find_maximum(data: Data, field: str) -> HandledData:
-    min_value = max(data, key=itemgetter(field))
-    name = "max"
-    return HandledData(
-        current_data=[{name: min_value[field]}],
-        fieldnames=[name],
-    )
-
-
-def find_average(data: Data, field: str) -> HandledData:
+def find_average(
+    data: Data,
+    field: str,
+) -> HandledData:
     avg = round(
         statistics.mean(float(row[field]) for row in data), 2
     )
@@ -35,6 +45,10 @@ def find_average(data: Data, field: str) -> HandledData:
         current_data=[{name: str(avg)}],
         fieldnames=[name],
     )
+
+
+find_maximum = partial(search_for, func=max)
+find_minimum = partial(search_for, func=min)
 
 
 class AggregateCommand(
