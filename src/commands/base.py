@@ -14,7 +14,16 @@ class HandledData(NamedTuple):
 
 
 class BaseCommand[T: Callable](ABC):
-    """Базовый класс для команд обработки данных."""
+    """Базовый класс для команд обработки данных.
+
+    Атрибуты:
+
+    command - Название команды, которое будет использоваться в CLI
+    help_text - Описание команды, которое будет использоваться в CLI
+    number_in_queue - Порядок выполнения команды в очереди
+    required - Флаг, указывающий, является ли команда обязательной
+
+    """
 
     command: ClassVar[str]
     help_text: ClassVar[str]
@@ -55,7 +64,13 @@ class BaseCommand[T: Callable](ABC):
 
 
 class DataValidatorMixin[T: Callable]:
-    """Миксин для валидации данных перед обработкой."""
+    """Миксин для валидации данных перед обработкой.
+
+    Атрибуты:
+    raise_exception_if_there_is_no_data - Флаг, указывающий,
+    нужно ли выбрасывать исключение, если нет данных для обработки.
+
+    """
 
     raise_exception_if_there_is_no_data: ClassVar[bool]
 

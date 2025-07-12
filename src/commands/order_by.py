@@ -16,6 +16,7 @@ def sorting(
     field: str,
     reverse: bool,
 ) -> HandledData:
+    """Сортирует данные по указанному полю."""
     type_of_field = find_out_type(
         current_data=data,
         field=field,
@@ -39,6 +40,8 @@ class OrderByCommand(
     DataValidatorMixin[OperatorFunc],
     BaseCommand[OperatorFunc],
 ):
+    """Команда для сортировки данных в CSV файле."""
+
     command = "order-by"
     help_text = "Команда для сортировки по полю"
     number_in_queue = 2
@@ -50,6 +53,7 @@ class OrderByCommand(
         fieldnames: Sequence[str],
         value: str,
     ) -> HandledData:
+        """Обрабатывает данные в соответствии с командой сортировки."""
         result = self.validate_data(
             current_data=current_data,
             fieldnames=fieldnames,

@@ -18,6 +18,7 @@ def search_for(
     field: str,
     func: Callable,
 ) -> HandledData:
+    """Ищет единственное значение в данных поля по заданной функции."""
     type_of_field = find_out_type(
         current_data=data,
         field=field,
@@ -37,6 +38,7 @@ def find_average(
     data: Data,
     field: str,
 ) -> HandledData:
+    """Находит среднее значение в данных поля."""
     avg = round(
         statistics.mean(float(row[field]) for row in data), 2
     )
@@ -55,6 +57,8 @@ class AggregateCommand(
     DataValidatorMixin[OperatorFunc],
     BaseCommand[OperatorFunc],
 ):
+    """Команда для агрегирования данных в CSV файле."""
+
     command = "aggregate"
     help_text = "Функция для агрегирования данных"
     number_in_queue = 1
@@ -66,6 +70,7 @@ class AggregateCommand(
         fieldnames: Sequence[str],
         value: str,
     ) -> HandledData:
+        """Обрабатывает данные в соответствии с командой агрегирования."""
         field = None
         try:
             func, field = self.validate_data(

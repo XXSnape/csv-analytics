@@ -22,6 +22,8 @@ predicate = Callable[
 class WhereCommand(
     BaseCommand[predicate],
 ):
+    """Команда для фильтрации данных в CSV файле по условию."""
+
     command = "where"
     help_text = "Условие для фильтрации данных"
     number_in_queue = 0
@@ -32,6 +34,7 @@ class WhereCommand(
         fieldnames: Sequence[str],
         value: str,
     ) -> HandledData:
+        """Обрабатывает данные в соответствии с условием фильтрации."""
         if not current_data:
             return HandledData(
                 current_data=current_data,
