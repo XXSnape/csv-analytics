@@ -1,11 +1,10 @@
 import csv
 import pathlib
 from operator import attrgetter
-from typing import Sequence
 
 from tabulate import tabulate
 
-from commands.base import BaseCommand
+from commands.base import BaseCommand, HandledData
 from common_types import Data
 from exceptions import IncorrectDataException
 
@@ -13,19 +12,6 @@ from exceptions import IncorrectDataException
 class FileHandler:
     """Класс для обработки CSV файлов и
     выполнения команд над данными."""
-
-    @staticmethod
-    def output_data(
-        data: Data,
-        headers: Sequence[str],
-    ) -> None:
-        print(
-            tabulate(
-                [row.values() for row in data],
-                headers=headers,
-                tablefmt="psql",
-            )
-        )
 
     def __init__(
         self,
@@ -42,8 +28,21 @@ class FileHandler:
         self.values = values
         self.handlers = list[BaseCommand]()
 
-    def handle(self):
-        """Обрабатывает CSV файл, применяет команды и выводит результат."""
+    @staticmethod
+    def output_data(
+        handled_data: HandledData,
+    ) -> None:
+        """Выводит обработанные данные в виде таблицы."""
+        print(
+            tabulate(
+                [row.values() for row in handled_data.current_data],
+                headers=handled_data.fieldnames,
+                tablefmt="psql",
+            )
+        )
+
+    def handle(self) -> HandledData:
+        """Обрабатывает данные в CSV файле"""
         data = Data()
         fieldnames = tuple[str]()
         with self.path.open() as file:
@@ -59,8 +58,10 @@ class FileHandler:
                     fieldnames=fieldnames,
                     value=value,
                 )
-        self.output_data(data, fieldnames)
-        return data
+        return HandledData(
+            current_data=data,
+            fieldnames=fieldnames,
+        )
 
     def register_handler(
         self,

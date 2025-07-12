@@ -65,7 +65,8 @@ def main() -> None:
 
     try:
         handler = create_handler(commands=commands, args=args)
-        handler.handle()
+        handled_data = handler.handle()
+        handler.output_data(handled_data=handled_data)
     except IncorrectDataException as e:
         print(e)
     except Exception:
