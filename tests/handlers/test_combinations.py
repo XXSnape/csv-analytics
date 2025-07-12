@@ -68,4 +68,4 @@ def test_handler(
     )
     register_commands(handler)
     result = handler.handle()
-    assert result == expected
+    assert result.current_data == expected
